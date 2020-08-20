@@ -1,0 +1,31 @@
+{
+    "name": "juhlinus/kakunin",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Kakunin\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kakunin\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^5.1"
+    },
+    "authors": [
+        {
+            "name": "Linus Juhlin",
+            "email": "linus.juhlin@protonmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4"
+    },
+    "suggest": {
+        "symfony/http-foundation": "Required for requests and responses.",
+        "illuminate/support": "Required for redirecting after input has been validated."
+    }
+}
