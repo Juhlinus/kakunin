@@ -43,6 +43,16 @@ trait ValidatesInertiaInput
                 $validator->getData()
             )
         );
+
+        $validateKey = config(
+            'services.kakunin.validation_key', 
+            'validate'
+        );
+
+        if (in_array($validateKey, $validatedKeys)) {
+            parent::failedValidation($validator);
+        }
+
         $validatorMessages = $validator->getMessageBag()->getMessages();
 
         $messages = array_filter($validatorMessages, function ($messageKey) use ($validatedKeys) {
