@@ -7,6 +7,7 @@ use Illuminate\Validation\Validator;
 class ValidationParser
 {
     private Validator $validator;
+    private string $validate_key;
     private array $validated_keys = [];
 
     /**
@@ -17,6 +18,10 @@ class ValidationParser
     public function __construct(Validator $validator)
     {
         $this->validator = $validator;
+        $this->validate_key = config(
+            'services.kakunin.validation_key', 
+            'validate'
+        );
     }
 
     /**

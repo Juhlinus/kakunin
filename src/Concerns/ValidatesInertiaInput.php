@@ -12,16 +12,6 @@ use Illuminate\Contracts\Validation\Validator;
  */
 trait ValidatesInertiaInput
 {
-    protected string $validate_key;
-
-    public function __construct()
-    {
-        $this->validate_key = config(
-            'services.kakunin.validation_key', 
-            'validate'
-        );
-    }
-
     /**
      * Handle a passed validation attempt.
      *
