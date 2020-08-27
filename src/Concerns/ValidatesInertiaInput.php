@@ -2,6 +2,7 @@
 
 namespace Kakunin\Concerns;
 
+use Kakunin\ValidationParser;
 use Kakunin\Exceptions\ValidatedException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
@@ -11,19 +12,26 @@ use Illuminate\Contracts\Validation\Validator;
  */
 trait ValidatesInertiaInput
 {
+    protected string $validate_key;
+
+    public function __construct()
+    {
+        $this->validate_key = config(
+            'services.kakunin.validation_key', 
+            'validate'
+        );
+    }
+
     /**
      * Handle a passed validation attempt.
      *
      * @return void
+     *
+     * @throws \Kakunin\Exceptions\ValidatedException
      */
-    protected function passedValidation()
+    protected function passedValidation(): void
     {
-        $validateKey = config(
-            'services.kakunin.validation_key', 
-            'validate'
-        );
-
-        if ($this->request->get($validateKey, false)) {
+        if ($this->request->get($this->validate_key, false)) {
             throw new ValidatedException();
         }
     }
@@ -36,28 +44,15 @@ trait ValidatesInertiaInput
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator): void
     {
-        $validatedKeys = array_keys(
-            array_filter(
-                $validator->getData()
-            )
-        );
+        $validationParser = new ValidationParser($validator);
 
-        $validateKey = config(
-            'services.kakunin.validation_key', 
-            'validate'
-        );
-
-        if (in_array($validateKey, $validatedKeys)) {
+        if ($validationParser->shouldNotValidate()) {
             parent::failedValidation($validator);
         }
 
-        $validatorMessages = $validator->getMessageBag()->getMessages();
-
-        $messages = array_filter($validatorMessages, function ($messageKey) use ($validatedKeys) {
-            return in_array($messageKey, $validatedKeys);
-        }, ARRAY_FILTER_USE_KEY);
+        $messages = $validationParser->parseValidationMessages();
 
         $exception = new ValidationException($validator);
 
