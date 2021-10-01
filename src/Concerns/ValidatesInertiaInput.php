@@ -21,7 +21,9 @@ trait ValidatesInertiaInput
      */
     protected function passedValidation(): void
     {
-        if ($this->request->get($this->validate_key, false)) {
+        $validationParser = new ValidationParser($this->getValidatorInstance());
+
+        if ($this->request->get($validationParser->getValidationKey(), false)) {
             throw new ValidatedException();
         }
     }

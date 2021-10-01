@@ -45,6 +45,16 @@ class ValidationParser
     }
 
     /**
+     * Get validation key
+     *
+     * @return     string
+     */
+    public function getValidationKey(): string
+    {
+        return $this->validate_key;
+    }
+
+    /**
      * Filters out the validation messages we don't need
      *
      * @return     array  
